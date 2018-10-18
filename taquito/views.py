@@ -3,19 +3,23 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Taco
 from .forms import TacoAddForm
 
+# General view
 def index(request):
     context = {}
+    # Get all the exisiting tacos with their corresponding description
     tacos = map(lambda x: {'id': x.id, 'description': x.__str__}, Taco.objects.all())
     context['tacos'] = tacos
     context['add_form'] = TacoAddForm()
     return render(request, 'taquito/index.html', context)
 
+# Delete taco view
 def delete(request, id=None):
     instance = get_object_or_404(Taco, id=id)
     instance.delete()
     messages.success(request, 'Successfully deleted')
     return redirect('index')
 
+# Add taco view
 def add(request):
     add_form = TacoAddForm(request.POST)
     if add_form.is_valid():
@@ -29,6 +33,7 @@ def add(request):
         messages.success(request, 'Your taco was successfully added')
     return redirect('index')
 
+# Add random taco view
 def add_random(request):
     t = Taco.create_random()
     t.save()

@@ -6,11 +6,13 @@ import random
 
 class Taco(models.Model):
     shell = models.CharField(max_length=200)
+    # Multiple options of the following ingredients can be chosen, so the list will be stored as a json string
     base_layer = models.CharField(max_length=2000)
     mixin = models.CharField(max_length=2000)
     condiment = models.CharField(max_length=2000)
     seasoning = models.CharField(max_length=2000)
 
+    # Api links to get the options of each ingredient
     api_link = r'https://tacos-ocecwkpxeq.now.sh'
     api_links = {
         'shell':r'/shells',
@@ -43,6 +45,7 @@ class Taco(models.Model):
     @classmethod
     def create_random(cls):
         options = Taco.get_options()
+        # Pick random choices of each of the ingredients
         shell = random.choice(options['shell'])[1]
         base_layer = [random.choice(options['base_layer'])[1]]
         mixin = [random.choice(options['mixin'])[1]]
@@ -50,6 +53,7 @@ class Taco(models.Model):
         seasoning = [random.choice(options['seasoning'])[1]]
         return Taco.create(shell, base_layer, mixin, condiment, seasoning)
 
+    # Tostring method so that tacos description are well formatted
     def __str__(self):
         base_layer = ', '.join(json.loads(self.base_layer))
         mixin = ', '.join(json.loads(self.mixin))
